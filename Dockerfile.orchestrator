@@ -1,0 +1,14 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+
+COPY tau2_orchestrator.py ./
+
+RUN pip install --no-cache-dir python-dotenv fastapi uvicorn httpx a2a-sdk google-adk google-genai
+
+EXPOSE 9100
+
+ENTRYPOINT ["python", "tau2_orchestrator.py"]
+CMD ["--host", "0.0.0.0", "--port", "9100"]
