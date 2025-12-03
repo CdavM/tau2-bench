@@ -4,10 +4,11 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
 
+# Build context should be repo root: docker build -f agentbeats/Dockerfile.worker .
 COPY pyproject.toml pdm.lock README.md ./
 COPY src/ ./src/
 COPY data/ ./data/
-COPY tau2_worker.py ./
+COPY agentbeats/tau2_worker.py ./
 
 # Initialize git repo so tau2 can get commit hash
 RUN git init && git config user.email "worker@tau2.local" && git config user.name "Tau2 Worker" && git add . && git commit -m "Initial commit"

@@ -91,7 +91,7 @@ def main():
         version='0.2.1',
         default_input_modes=['text'],
         default_output_modes=['text'],
-        capabilities=AgentCapabilities(streaming=False),
+        capabilities=AgentCapabilities(streaming=True),
         skills=[],
     )
 
