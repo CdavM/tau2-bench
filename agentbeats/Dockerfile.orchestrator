@@ -4,7 +4,8 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
 
-COPY tau2_orchestrator.py ./
+# Build context should be repo root: docker build -f agentbeats/Dockerfile.orchestrator .
+COPY agentbeats/tau2_orchestrator.py ./
 
 RUN pip install --no-cache-dir python-dotenv fastapi uvicorn httpx a2a-sdk google-adk google-genai
 
