@@ -4,18 +4,18 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
 
-# Build context should be repo root: docker build -f agentbeats/Dockerfile.worker .
-COPY pyproject.toml pdm.lock README.md ./
-COPY src/ ./src/
-COPY data/ ./data/
+# Clone tau2-bench and install it
+RUN git clone https://github.com/sierra-research/tau2-bench /app/tau2-bench && \
+    cd /app/tau2-bench && \
+    pip install --no-cache-dir -e .
+
+# Install additional dependencies for worker agent
+RUN pip install --no-cache-dir python-dotenv fastapi uvicorn a2a-sdk google-adk google-genai httpx
+
+# Copy worker agent script
 COPY agentbeats/tau2_worker.py ./
 
-# Initialize git repo so tau2 can get commit hash
-RUN git init && git config user.email "worker@tau2.local" && git config user.name "Tau2 Worker" && git add . && git commit -m "Initial commit"
-
-RUN pip install --no-cache-dir -e . && pip install --no-cache-dir python-dotenv fastapi uvicorn
-
-ENV TAU2_DATA_DIR=/app/data
+ENV TAU2_DATA_DIR=/app/tau2-bench/data
 EXPOSE 9200
 
 ENTRYPOINT ["python", "tau2_worker.py"]
